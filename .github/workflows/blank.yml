@@ -13,7 +13,7 @@ jobs:
       env:
         ARM_CLIENT_ID: ${{ secrets.clientId }}
         ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
-        ARM_SUBSCRPITION_ID: ${{ secrets.subscriptionId }}
+        ARM_SUBSCRPTION_ID: ${{ secrets.subscriptionId }}
         ARM_TENANT_ID: ${{ secrets.tenantId }}
         ARM_ACCESS_KEY: ${{ secrets.accessKey }}
         
