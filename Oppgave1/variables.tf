@@ -7,9 +7,9 @@ variable "location" {
   default = "northeurope"
   description = "Location that the instances will be created"
 }
-/*
+
 variable "prefix" {
-  default = "tfvmex"
+  default = "team1"
   description = "A prefix for the environment"
 }
 
@@ -18,4 +18,4 @@ variable scfile{
     default = "user_data.sh"
 	description = "A script to run on vm's after it is created"
 }
- */
+
