@@ -10,6 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Validate
+      working-directory: ./Oppgave1
       run: |
         terraform fmt
         terraform validate
