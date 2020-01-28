@@ -16,7 +16,7 @@ jobs:
         ARM_SUBSCRPITION_ID: ${{ secrets.subscriptionId }}
         ARM_TENANT_ID: ${{ secrets.tenantId }}
         ARM_ACCESS_KEY: ${{ secrets.accessKey }}
-        
+      working-directory: ./Oppgave1
       run: |
         terraform init
         terraform fmt
