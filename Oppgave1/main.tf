@@ -37,7 +37,7 @@ resource "azurerm_network_interface" "main" {
     name                          = "testconfiguration1"
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
-	public_ip_address_id          = azurerm_public_ip.main.id
+    public_ip_address_id          = azurerm_public_ip.main.id
   }
 }
 
@@ -82,12 +82,12 @@ resource "azurerm_virtual_machine" "main" {
 
 
 resource "azurerm_network_security_group" "main" {
-  name                  = "${var.prefix}-nsg"
+  name                = "${var.prefix}-nsg"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
 }
-  
+
 resource "azurerm_network_security_rule" "mainSSH" {
   name                        = "SSH"
   priority                    = 300
@@ -131,14 +131,14 @@ resource "azurerm_network_security_rule" "main80" {
 }
 
 resource "azurerm_virtual_machine_extension" "main" {
-  name                 = "docker"
-  virtual_machine_id   = azurerm_virtual_machine.main.id
+  name               = "docker"
+  virtual_machine_id = azurerm_virtual_machine.main.id
   #virtual_machine_name = azurerm_virtual_machine.main.name
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
-    protected_settings = <<PROT
+  protected_settings = <<PROT
     {
         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
     }

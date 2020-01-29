@@ -1,4 +1,4 @@
-prefix             = "team1"
+prefix = "team1"
 /* 
 environment        = "Staging"
 
