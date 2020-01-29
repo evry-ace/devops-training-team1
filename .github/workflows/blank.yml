@@ -10,8 +10,15 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Validate
+      env:
+        ARM_CLIENT_ID: ${{ secrets.clientId }}
+        ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
+        ARM_TENANT_ID: ${{ secrets.tenantId }}
+        ARM_ACCESS_KEY: ${{ secrets.accessKey }}
       working-directory: ./Oppgave1
       run: |
+        terraform init
         terraform fmt
         terraform validate
         terraform plan
