@@ -13,9 +13,3 @@ variable "prefix" {
   description = "A prefix for the environment"
 }
 
-variable scfile {
-  type        = string
-  default     = "user_data.sh"
-  description = "A script to run on vm's after it is created"
-}
-

@@ -51,10 +51,6 @@ resource "azurerm_virtual_machine" "main" {
   # Uncomment this line to delete the OS disk automatically when deleting the VM
   # delete_os_disk_on_termination = true
 
-
-  # Uncomment this line to delete the data disks automatically when deleting the VM
-  # delete_data_disks_on_termination = true
-
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
@@ -131,9 +127,8 @@ resource "azurerm_network_security_rule" "main80" {
 }
 
 resource "azurerm_virtual_machine_extension" "main" {
-  name               = "docker"
-  virtual_machine_id = azurerm_virtual_machine.main.id
-  #virtual_machine_name = azurerm_virtual_machine.main.name
+  name                 = "nginx"
+  virtual_machine_id   = azurerm_virtual_machine.main.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"

@@ -1,12 +1,3 @@
-prefix = "team1"
-/* 
-environment        = "Staging"
-
-location           = "West europe"
-
-
-
-scfile             = "user_data.sh"
-
-Rancher2Password   = "admin" 
-*/
+# prefix         = "team1"
+# resource_group = "devops-training-team1"
+# location       = "northeurope"
