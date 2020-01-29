@@ -1,6 +1,6 @@
 variable "resource_group" {
   default     = "devops-training-team1"
-  description                           = "The name of the resource group in which to create the virtual network."
+  description = "The name of the resource group in which to create the virtual network."
 }
 
 variable "location" {
