@@ -21,7 +21,7 @@ jobs:
         terraform fmt -check=true -write=false -diff -recursive
         terraform init
         terraform validate
-        terraform plan -detailed-exitcode
+        terraform plan
       # run: terraform fmt -check=true -write=false -diff -recursive
       # run: terraform init
       # run: terraform validate
