@@ -18,7 +18,7 @@ jobs:
         ARM_ACCESS_KEY: ${{ secrets.accessKey }}
       working-directory: ./Oppgave1
       run: |
-        terraform terraform fmt -check=true -write=false -diff -recursive
+        terraform fmt -check=true -write=false -diff -recursive
         terraform init
         terraform validate
         terraform plan -detailed-exitcode
