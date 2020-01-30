@@ -33,6 +33,9 @@ jobs:
     - name: 'Generate JSON file'
       run:  terraform show -json tf.plan > /home/runner/work/devops-training-team1/devops-training-team1/tf.plan.json
       working-directory: ${{env.working-directory}}
+    - name: 'list file'
+      run:  ls /home/runner/work/devops-training-team1/devops-training-team1
+      working-directory: ${{env.working-directory}}
     - name: Configuration Test
       uses: instrumenta/conftest-action@master
       with:
