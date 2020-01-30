@@ -27,21 +27,5 @@ jobs:
       run: terraform validate
       working-directory: ${{env.working-directory}}
     - name: 'Terraform plan'
-      # run: terraform plan
-      run: terraform plan -input=false -out=tf.plan 
+      run: terraform plan
       working-directory: ${{env.working-directory}}
-    - name: 'Generate JSON file'
-      run:  terraform show -json tf.plan > /home/runner/work/devops-training-team1/devops-training-team1/tf.plan.json
-      working-directory: ${{env.working-directory}}
-    - name: 'list file'
-      run:  ls /home/runner/work/devops-training-team1/devops-training-team1
-      working-directory: ${{env.working-directory}}
-    - name: Configuration Test
-      uses: instrumenta/conftest-action@master
-      with:
-        files: /github/workspace/tf.plan.json
-    # - name: Configuration Test
-    #   # working-directory: ${{env.working-directory}}
-    #   uses: instrumenta/conftest-action@master
-    #   with:
-    #     files: tf.plan.json
