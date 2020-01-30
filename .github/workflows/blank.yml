@@ -7,21 +7,30 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      ARM_CLIENT_ID: ${{ secrets.clientId }}
+      ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
+      ARM_TENANT_ID: ${{ secrets.tenantId }}
+      ARM_ACCESS_KEY: ${{ secrets.accessKey }}
+
+    working-directory: ./Oppgave1
+
     steps:
     - uses: actions/checkout@v1
-    - name: Validate
-      env:
-        ARM_CLIENT_ID: ${{ secrets.clientId }}
-        ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
-        ARM_TENANT_ID: ${{ secrets.tenantId }}
-        ARM_ACCESS_KEY: ${{ secrets.accessKey }}
-      working-directory: ./Oppgave1
-      run: |
-        terraform fmt -check=true -write=false -diff -recursive
-        terraform init
-        terraform validate
-        terraform plan
+    - name: 'Terraform fmt check'
+      run: terraform fmt -check=true -write=false -diff -recursive
+    - name: 'Terraform init'
+      run: terraform init
+    - name: 'Terraform validate'
+      run: terraform validate
+    - name: 'Terraform plan'
+      run: terraform plan
+      # run: |
+      #   terraform fmt -check=true -write=false -diff -recursive
+      #   terraform init
+      #   terraform validate
+      #   terraform plan
       # run: terraform fmt -check=true -write=false -diff -recursive
       # run: terraform init
       # run: terraform validate
