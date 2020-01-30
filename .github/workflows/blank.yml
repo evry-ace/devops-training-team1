@@ -34,7 +34,11 @@ jobs:
       run:  terraform show -json tf.plan > tf.plan.json
       working-directory: ${{env.working-directory}}
     - name: Configuration Test
-      working-directory: ${{env.working-directory}}
       uses: instrumenta/conftest-action@master
       with:
         files: tf.plan.json
+    # - name: Configuration Test
+    #   # working-directory: ${{env.working-directory}}
+    #   uses: instrumenta/conftest-action@master
+    #   with:
+    #     files: tf.plan.json
