@@ -13,19 +13,22 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
       ARM_TENANT_ID: ${{ secrets.tenantId }}
       ARM_ACCESS_KEY: ${{ secrets.accessKey }}
-
-    working-directory: ./Oppgave1
+      working-directory: ./Oppgave1
 
     steps:
     - uses: actions/checkout@v1
     - name: 'Terraform fmt check'
       run: terraform fmt -check=true -write=false -diff -recursive
+      working-directory: ${{env.working-directory}}
     - name: 'Terraform init'
       run: terraform init
+      working-directory: ${{env.working-directory}}
     - name: 'Terraform validate'
       run: terraform validate
+      working-directory: ${{env.working-directory}}
     - name: 'Terraform plan'
       run: terraform plan
+      working-directory: ${{env.working-directory}}
       # run: |
       #   terraform fmt -check=true -write=false -diff -recursive
       #   terraform init
