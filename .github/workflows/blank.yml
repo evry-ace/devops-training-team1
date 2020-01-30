@@ -36,7 +36,7 @@ jobs:
     - name: Configuration Test
       uses: instrumenta/conftest-action@master
       with:
-        files: tf.plan.json
+        files: ${{env.working-directory}}/tf.plan.json
     # - name: Configuration Test
     #   # working-directory: ${{env.working-directory}}
     #   uses: instrumenta/conftest-action@master
