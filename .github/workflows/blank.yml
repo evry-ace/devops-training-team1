@@ -27,14 +27,14 @@ jobs:
       run: terraform validate
       working-directory: ${{env.working-directory}}
     - name: 'Terraform plan'
-      run: terraform plan
+      # run: terraform plan
+      run: terraform plan -input=false -out=tf.plan 
       working-directory: ${{env.working-directory}}
-      # run: |
-      #   terraform fmt -check=true -write=false -diff -recursive
-      #   terraform init
-      #   terraform validate
-      #   terraform plan
-      # run: terraform fmt -check=true -write=false -diff -recursive
-      # run: terraform init
-      # run: terraform validate
-      # run: terraform plan -detailed-exitcode
+    - name: 'Generate JSON file'
+      run:  terraform show -json tf.plan > tf.plan.json
+      working-directory: ${{env.working-directory}}
+    - name: Configuration Test
+      working-directory: ${{env.working-directory}}
+      uses: instrumenta/conftest-action@master
+      with:
+        files: tf.plan.json
