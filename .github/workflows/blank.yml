@@ -31,12 +31,12 @@ jobs:
       run: terraform plan -input=false -out=tf.plan 
       working-directory: ${{env.working-directory}}
     - name: 'Generate JSON file'
-      run:  terraform show -json tf.plan > tf.plan.json
+      run:  terraform show -json tf.plan > ../tf.plan.json
       working-directory: ${{env.working-directory}}
     - name: Configuration Test
       uses: instrumenta/conftest-action@master
       with:
-        files: ${{env.working-directory}}/tf.plan.json
+        files: tf.plan.json
     # - name: Configuration Test
     #   # working-directory: ${{env.working-directory}}
     #   uses: instrumenta/conftest-action@master
