@@ -1,0 +1,47 @@
+name: CI
+
+on:  
+  push:
+    tags: 
+      - destroy
+      - conjure_plan
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    env:
+      ARM_CLIENT_ID: ${{ secrets.clientId }}
+      ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
+      ARM_TENANT_ID: ${{ secrets.tenantId }}
+      ARM_ACCESS_KEY: ${{ secrets.accessKey }}
+      working-directory: ./Oppgave1
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      
+    - name: 'Checkout'
+      uses: actions/checkout@v1
+    - name: 'Terraform init'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: ${{env.working-directory}}
+      
+    - name: 'Terraform destroy'
+      if: contains(github.ref, "destroy")
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'destroy'
+        tf_actions_working_dir: ${{env.working-directory}}
+        
+    - name: 'Terraform plan destroy'
+      if: contains(github.ref, "conjure_plan")
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: ${{env.working-directory}}
+        args: |-
+          -destroy
