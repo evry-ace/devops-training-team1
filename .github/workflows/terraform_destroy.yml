@@ -4,7 +4,7 @@ on:
   push:
     tags: 
       - destroy
-      - conjure_plan
+      - conjure_plan*
 
 jobs:
   destroy:
