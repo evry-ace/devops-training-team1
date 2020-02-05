@@ -1,4 +1,4 @@
-name: CI
+name: 'Terraform destroy'
 
 on:  
   push:
