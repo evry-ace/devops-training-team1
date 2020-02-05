@@ -21,22 +21,43 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.tenantId }}
       ARM_ACCESS_KEY: ${{ secrets.accessKey }}
       working-directory: ./Oppgave1
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v1
+    - name: 'Checkout'
+      uses: actions/checkout@v1
     - name: 'Terraform fmt check'
-      run: terraform fmt -check=true -write=false -diff -recursive
-      working-directory: ${{env.working-directory}}
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'fmt'
+        tf_actions_working_dir: ${{env.working-directory}}
     - name: 'Terraform init'
-      run: terraform init
-      working-directory: ${{env.working-directory}}
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: ${{env.working-directory}}
     - name: 'Terraform validate'
-      run: terraform validate
-      working-directory: ${{env.working-directory}}
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'validate'
+        tf_actions_working_dir: ${{env.working-directory}}
     - name: 'Terraform plan'
-      run: terraform plan
-      working-directory: ${{env.working-directory}}
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: ${{env.working-directory}}
+        args: |-
+          -out=tfplan
     - name: 'Terraform apply'
       if: github.event_name == 'push'
-      run: terraform apply -auto-approve
-      working-directory: ${{env.working-directory}}
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'apply'
+        tf_actions_working_dir: ${{env.working-directory}}
+        args: |-
+          tfplan
