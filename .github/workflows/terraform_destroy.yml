@@ -3,8 +3,8 @@ name: Terraform destroy
 on:  
   push:
     branches:
-      - destroy/*
-      - conjure_plan/*
+      - 'destroy/*'
+      - 'conjure_plan/*'
 
 jobs:
   destroy:
