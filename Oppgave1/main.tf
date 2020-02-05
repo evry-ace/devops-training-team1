@@ -2,36 +2,31 @@ provider "azurerm" {
 
 }
 
-resource "azurerm_resource_group" "main" {
-  name     = var.resource_group
-  location = var.location
-}
-
 resource "azurerm_virtual_network" "main" {
   name                = "${var.prefix}-network"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = var.location
+  resource_group_name = var.resource_group
 }
 
 resource "azurerm_subnet" "internal" {
   name                 = "${var.prefix}-internal"
-  resource_group_name  = azurerm_resource_group.main.name
+  resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefix       = "10.0.1.0/24"
 }
 
 resource "azurerm_network_security_group" "main" {
   name                = "${var.prefix}-nsg"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = var.location
+  resource_group_name = var.resource_group
 }
 
 module "vm1" {
   source              = "./vm-module"
   vm_name             = "${var.prefix}1-vm"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = var.location
+  resource_group_name = var.resource_group
   subnet_id           = azurerm_subnet.internal.id
   username            = "testadmin"
   password            = "Password123"
@@ -41,8 +36,8 @@ module "vm1" {
 module "vm2" {
   source              = "./vm-module"
   vm_name             = "${var.prefix}2-vm"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = var.location
+  resource_group_name = var.resource_group
   subnet_id           = azurerm_subnet.internal.id
   username            = "testadmin"
   password            = "Password123"
@@ -52,8 +47,8 @@ module "vm2" {
 module "vm3" {
   source              = "./vm-module"
   vm_name             = "${var.prefix}3-vm"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = var.location
+  resource_group_name = var.resource_group
   subnet_id           = azurerm_subnet.internal.id
   username            = "testadmin"
   password            = "Password123"
@@ -69,7 +64,7 @@ resource "azurerm_network_security_rule" "ssh" {
   destination_port_range      = "22"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.main.name
+  resource_group_name         = var.resource_group
   network_security_group_name = azurerm_network_security_group.main.name
 }
 
@@ -83,7 +78,7 @@ resource "azurerm_network_security_rule" "vm3psql" {
   destination_port_range      = "5432"
   source_address_prefix       = module.vm2.ip_address
   destination_address_prefix  = module.vm3.ip_address
-  resource_group_name         = azurerm_resource_group.main.name
+  resource_group_name         = var.resource_group
   network_security_group_name = azurerm_network_security_group.main.name
 }
 
@@ -97,7 +92,7 @@ resource "azurerm_network_security_rule" "vm1http" {
   destination_port_range      = "80"
   source_address_prefix       = "*"
   destination_address_prefix  = module.vm1.ip_address
-  resource_group_name         = azurerm_resource_group.main.name
+  resource_group_name         = var.resource_group
   network_security_group_name = azurerm_network_security_group.main.name
 }
 
@@ -111,6 +106,6 @@ resource "azurerm_network_security_rule" "vm2http" {
   destination_port_range      = "80"
   source_address_prefix       = module.vm1.ip_address
   destination_address_prefix  = module.vm2.ip_address
-  resource_group_name         = azurerm_resource_group.main.name
+  resource_group_name         = var.resource_group
   network_security_group_name = azurerm_network_security_group.main.name
 }
