@@ -21,70 +21,45 @@ resource "azurerm_subnet" "internal" {
   address_prefix       = "10.0.1.0/24"
 }
 
-resource "azurerm_public_ip" "main" {
-  name                = "${var.prefix}-PublicIp"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  allocation_method   = "Static"
-}
-
-resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-nic"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-
-  ip_configuration {
-    name                          = "testconfiguration1"
-    subnet_id                     = azurerm_subnet.internal.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.main.id
-  }
-}
-
-resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
-  location              = azurerm_resource_group.main.location
-  resource_group_name   = azurerm_resource_group.main.name
-  network_interface_ids = ["${azurerm_network_interface.main.id}"]
-  vm_size               = "Standard_B1ms"
-
-  # Uncomment this line to delete the OS disk automatically when deleting the VM
-  # delete_os_disk_on_termination = true
-
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-  storage_os_disk {
-    name              = "myosdisk1"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
-  os_profile {
-    computer_name  = "hostname"
-    admin_username = "testadmin"
-    admin_password = "Password1234!"
-  }
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
-  tags = {
-    environment = "staging"
-  }
-}
-
-
 resource "azurerm_network_security_group" "main" {
   name                = "${var.prefix}-nsg"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-
 }
 
-resource "azurerm_network_security_rule" "mainSSH" {
+module "vm1" {
+  source              = "./vm-module"
+  vm_name             = "${var.prefix}1-vm"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  subnet_id           = azurerm_subnet.internal.id
+  username            = "test"
+  password            = "VerySecure123"
+  add_nginx           = true
+}
+
+module "vm2" {
+  source              = "./vm-module"
+  vm_name             = "${var.prefix}2-vm"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  subnet_id           = azurerm_subnet.internal.id
+  username            = "test"
+  password            = "VerySecure123"
+  add_nginx           = true
+}
+
+module "vm3" {
+  source              = "./vm-module"
+  vm_name             = "${var.prefix}3-vm"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  subnet_id           = azurerm_subnet.internal.id
+  username            = "test"
+  password            = "VerySecure123"
+}
+
+resource "azurerm_network_security_rule" "ssh" {
   name                        = "SSH"
   priority                    = 300
   direction                   = "Inbound"
@@ -98,22 +73,22 @@ resource "azurerm_network_security_rule" "mainSSH" {
   network_security_group_name = azurerm_network_security_group.main.name
 }
 
-resource "azurerm_network_security_rule" "main443" {
-  name                        = "Port_5432"
+resource "azurerm_network_security_rule" "vm3psql" {
+  name                        = "Port_Internal_5432"
   priority                    = 310
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
-  source_port_range           = "*"
+  source_port_range           = "5432"
   destination_port_range      = "5432"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
+  source_address_prefix       = module.vm2.ip_address
+  destination_address_prefix  = module.vm3.ip_address
   resource_group_name         = azurerm_resource_group.main.name
   network_security_group_name = azurerm_network_security_group.main.name
 }
 
-resource "azurerm_network_security_rule" "main80" {
-  name                        = "Port_80"
+resource "azurerm_network_security_rule" "vm1http" {
+  name                        = "Port_Internet_80"
   priority                    = 320
   direction                   = "Inbound"
   access                      = "Allow"
@@ -121,22 +96,21 @@ resource "azurerm_network_security_rule" "main80" {
   source_port_range           = "*"
   destination_port_range      = "80"
   source_address_prefix       = "*"
-  destination_address_prefix  = "*"
+  destination_address_prefix  = module.vm1.ip_address
   resource_group_name         = azurerm_resource_group.main.name
   network_security_group_name = azurerm_network_security_group.main.name
 }
 
-resource "azurerm_virtual_machine_extension" "main" {
-  name                 = "nginx"
-  virtual_machine_id   = azurerm_virtual_machine.main.id
-  publisher            = "Microsoft.Azure.Extensions"
-  type                 = "CustomScript"
-  type_handler_version = "2.0"
-
-  protected_settings = <<PROT
-    {
-        "script": "${base64encode(file("${path.module}/user_data.sh"))}"
-    }
-    PROT
-
+resource "azurerm_network_security_rule" "vm2http" {
+  name                        = "Port_Internal_80"
+  priority                    = 320
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "80"
+  source_address_prefix       = module.vm1.ip_address
+  destination_address_prefix  = module.vm2.ip_address
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.main.name
 }
