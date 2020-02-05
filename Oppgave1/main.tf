@@ -33,8 +33,8 @@ module "vm1" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   subnet_id           = azurerm_subnet.internal.id
-  username            = "test"
-  password            = "VerySecure123"
+  username            = "testadmin"
+  password            = "Password123"
   add_nginx           = true
 }
 
@@ -44,8 +44,8 @@ module "vm2" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   subnet_id           = azurerm_subnet.internal.id
-  username            = "test"
-  password            = "VerySecure123"
+  username            = "testadmin"
+  password            = "Password123"
   add_nginx           = true
 }
 
@@ -55,8 +55,8 @@ module "vm3" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   subnet_id           = azurerm_subnet.internal.id
-  username            = "test"
-  password            = "VerySecure123"
+  username            = "testadmin"
+  password            = "Password123"
 }
 
 resource "azurerm_network_security_rule" "ssh" {
@@ -89,7 +89,7 @@ resource "azurerm_network_security_rule" "vm3psql" {
 
 resource "azurerm_network_security_rule" "vm1http" {
   name                        = "Port_Internet_80"
-  priority                    = 320
+  priority                    = 330
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
