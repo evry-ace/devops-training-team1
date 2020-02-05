@@ -2,9 +2,9 @@ name: Terraform destroy
 
 on:  
   push:
-    tags: 
-      - destroy
-      - conjure_plan*
+    branches:
+      - destroy/*
+      - conjure_plan/*
 
 jobs:
   destroy:
