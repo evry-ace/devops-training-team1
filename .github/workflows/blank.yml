@@ -38,5 +38,5 @@ jobs:
       working-directory: ${{env.working-directory}}
     - name: 'Terraform apply'
       if: github.event_name == 'push'
-      run: terraform apply -input=false
+      run: terraform apply -auto-approve
       working-directory: ${{env.working-directory}}
