@@ -24,6 +24,6 @@ variable "password" {
 }
 
 variable "add_nginx" {
-  default = false
+  default     = false
   description = "Set to true if the VM should run an NGINX server"
 }
