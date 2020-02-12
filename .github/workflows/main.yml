@@ -55,7 +55,7 @@ jobs:
             -destroy     
              
       - name: 'Terraform destroy'
-        if: github.event.client_payload.text == "Destroy"
+        if: github.event.client_payload.text == 'Destroy'
         run: 'echo "Triggered event to ${{ github.event.client_payload.text }} infastrukture"'
 
 
