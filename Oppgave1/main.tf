@@ -54,62 +54,62 @@ resource "azurerm_network_security_group" "ssh" {
   }
 }
 
-resource "azurerm_network_security_group" "http" {
-  depends_on          = ["module.vnet"]
-  name                = "http"
-  location            = var.location
-  resource_group_name = var.resource_group
+# resource "azurerm_network_security_group" "http" {
+#   depends_on          = ["module.vnet"]
+#   name                = "http"
+#   location            = var.location
+#   resource_group_name = var.resource_group
 
-  security_rule {
-    name                       = "httprule"
-    priority                   = 101
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "*"
-    destination_address_prefix = "<<loadbalancer frontend subnet>>"
-  }
-}
+#   security_rule {
+#     name                       = "httprule"
+#     priority                   = 101
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "80"
+#     source_address_prefix      = "*"
+#     destination_address_prefix = "<<loadbalancer frontend subnet>>"
+#   }
+# }
 
-resource "azurerm_network_security_group" "httpinternal" {
-  depends_on          = ["module.vnet"]
-  name                = "httpinternal"
-  location            = var.location
-  resource_group_name = var.resource_group
+# resource "azurerm_network_security_group" "httpinternal" {
+#   depends_on          = ["module.vnet"]
+#   name                = "httpinternal"
+#   location            = var.location
+#   resource_group_name = var.resource_group
 
-  security_rule {
-    name                       = "httpinternalrule"
-    priority                   = 102
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "<<alle vm i frontend subnet>>"
-    destination_address_prefix = "<<loadbalancer backend subnet>>"
-  }
-}
+#   security_rule {
+#     name                       = "httpinternalrule"
+#     priority                   = 102
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "80"
+#     source_address_prefix      = "<<alle vm i frontend subnet>>"
+#     destination_address_prefix = "<<loadbalancer backend subnet>>"
+#   }
+# }
 
-resource "azurerm_network_security_group" "psql" {
-  depends_on          = ["module.vnet"]
-  name                = "psql"
-  location            = var.location
-  resource_group_name = var.resource_group
+# resource "azurerm_network_security_group" "psql" {
+#   depends_on          = ["module.vnet"]
+#   name                = "psql"
+#   location            = var.location
+#   resource_group_name = var.resource_group
 
-  security_rule {
-    name                       = "psqlrule"
-    priority                   = 103
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "5432"
-    destination_port_range     = "5432"
-    source_address_prefix      = "<alle vm i subnet backend>"
-    destination_address_prefix = "<loadbalancer i subnet db >"
-  }
-}
+#   security_rule {
+#     name                       = "psqlrule"
+#     priority                   = 103
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "5432"
+#     destination_port_range     = "5432"
+#     source_address_prefix      = "<alle vm i subnet backend>"
+#     destination_address_prefix = "<loadbalancer i subnet db >"
+#   }
+# }
 
 # module "vmfrontend" {
 #   source              = "./vm-module"
