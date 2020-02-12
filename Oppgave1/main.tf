@@ -383,7 +383,7 @@ resource "azurerm_lb_rule" "privatedblbnatrule" {
   frontend_port                  = 5432
   backend_port                   = 5432
   backend_address_pool_id        = azurerm_lb_backend_address_pool.privateDBbepool.id
-  frontend_ip_configuration_name = "dbIPAddress"
+  frontend_ip_configuration_name = "PrivateDBIPAddress"
   probe_id                       = azurerm_lb_probe.privateDBprobe.id
 }
 
