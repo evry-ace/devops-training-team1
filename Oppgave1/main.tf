@@ -2,8 +2,6 @@ provider "azurerm" {
 
 }
 
-variable "resource_group_name" {}
-
 module "vnet" {
   source              = "Azure/vnet/azurerm"
   resource_group_name = var.resource_group
@@ -18,7 +16,7 @@ resource "azurerm_subnet" "frontend" {
   address_prefix            = "10.0.1.0/24"
   resource_group_name       = var.resource_group
   virtual_network_name      = module.vnet.vnet_name
-  network_security_group_id = "${azurerm_network_security_group.ssh.id}"
+  network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet" "backend" {
@@ -26,7 +24,7 @@ resource "azurerm_subnet" "backend" {
   address_prefix            = "10.0.2.0/24"
   resource_group_name       = var.resource_group
   virtual_network_name      = module.vnet.vnet_name
-  network_security_group_id = "${azurerm_network_security_group.ssh.id}"
+  network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet" "database" {
@@ -34,11 +32,11 @@ resource "azurerm_subnet" "database" {
   address_prefix            = "10.0.3.0/24"
   resource_group_name       = var.resource_group
   virtual_network_name      = module.vnet.vnet_name
-  network_security_group_id = "${azurerm_network_security_group.ssh.id}"
+  network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_network_security_group" "ssh" {
-  depends_on          = ["module.vnet"]
+  depends_on          = [module.vnet]
   name                = "ssh"
   location            = var.location
   resource_group_name = var.resource_group
@@ -153,7 +151,7 @@ resource "azurerm_network_security_group" "psql" {
 resource "azurerm_public_ip" "pip" {
   name                = "lbpip"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.resource_group
   allocation_method   = "Static"
 }
 
