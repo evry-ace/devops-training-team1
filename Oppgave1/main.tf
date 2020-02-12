@@ -191,11 +191,6 @@ resource "azurerm_lb_rule" "lbnatrule" {
   probe_id                       = azurerm_lb_probe.vmss.id
 }
 
-data "azurerm_image" "image" {
-  name                = "publicPackerImage"
-  resource_group_name = var.resource_group
-}
-
 resource "azurerm_virtual_machine_scale_set" "vmss" {
   name                = "vmscaleset"
   location            = var.location
@@ -209,7 +204,10 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   }
 
   storage_profile_image_reference {
-    id = data.azurerm_image.image.id
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
   }
 
   storage_profile_os_disk {
@@ -304,7 +302,10 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
   }
 
   storage_profile_image_reference {
-    id = data.azurerm_image.image.id
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
   }
 
   storage_profile_os_disk {
@@ -399,7 +400,10 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
   }
 
   storage_profile_image_reference {
-    id = data.azurerm_image.image.id
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
   }
 
   storage_profile_os_disk {
