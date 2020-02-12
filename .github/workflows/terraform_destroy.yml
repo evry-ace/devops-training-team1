@@ -1,9 +1,11 @@
 name: Terraform destroy
 
 on:  
-  push:
-    branches:
-      - 'destroy/*'
+#  push:
+#    branches:
+#      - 'destroy/*'
+  repository_dispatch:
+    types: do-something
 
 jobs:
   destroy:
@@ -26,13 +28,6 @@ jobs:
         tf_actions_version: 0.12.20
         tf_actions_subcommand: 'init'
         tf_actions_working_dir: ${{env.working-directory}}
-      
-#    - name: 'Terraform destroy'
-#      uses: hashicorp/terraform-github-actions@master
-#      with:
-#        tf_actions_version: 0.12.20
-#        tf_actions_subcommand: 'destroy'
-#        tf_actions_working_dir: ${{env.working-directory}}
         
     - name: 'Terraform plan destroy'
       uses: hashicorp/terraform-github-actions@master
@@ -42,3 +37,12 @@ jobs:
         tf_actions_working_dir: ${{env.working-directory}}
         args: |-
           -destroy
+
+    - name: 'Terraform destroy'
+      if: github.event.client_payload.text == 'Destroy'
+      run: 'echo "Triggered event to ${{ github.event.client_payload.text }} infastrukture"'
+#      uses: hashicorp/terraform-github-actions@master
+#      with:
+#        tf_actions_version: 0.12.20
+#        tf_actions_subcommand: 'destroy'
+#        tf_actions_working_dir: ${{env.working-directory}} 
