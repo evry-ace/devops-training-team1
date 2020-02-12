@@ -27,3 +27,8 @@ variable "add_nginx" {
   default     = false
   description = "Set to true if the VM should run an NGINX server"
 }
+
+variable "vm_count" {
+  default     = 1
+  description = "Number of vm to create"
+}
