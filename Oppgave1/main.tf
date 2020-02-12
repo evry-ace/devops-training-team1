@@ -2,7 +2,7 @@ provider "azurerm" {
 
 }
 
-variable "resource_group_name" { }
+variable "resource_group_name" {}
 
 module "vnet" {
   source              = "Azure/vnet/azurerm"
@@ -14,26 +14,26 @@ module "vnet" {
 }
 
 resource "azurerm_subnet" "frontend" {
-  name  = "frontend"
-  address_prefix = "10.0.1.0/24"
-  resource_group_name = var.resource_group
-  virtual_network_name = module.vnet.vnet_name
+  name                      = "frontend"
+  address_prefix            = "10.0.1.0/24"
+  resource_group_name       = var.resource_group
+  virtual_network_name      = module.vnet.vnet_name
   network_security_group_id = "${azurerm_network_security_group.ssh.id}"
 }
 
 resource "azurerm_subnet" "backend" {
-  name  = "backend"
-  address_prefix = "10.0.2.0/24"
-  resource_group_name = var.resource_group
-  virtual_network_name = module.vnet.vnet_name
+  name                      = "backend"
+  address_prefix            = "10.0.2.0/24"
+  resource_group_name       = var.resource_group
+  virtual_network_name      = module.vnet.vnet_name
   network_security_group_id = "${azurerm_network_security_group.ssh.id}"
 }
 
 resource "azurerm_subnet" "database" {
-  name  = "database"
-  address_prefix = "10.0.3.0/24"
-  resource_group_name = var.resource_group
-  virtual_network_name = module.vnet.vnet_name
+  name                      = "database"
+  address_prefix            = "10.0.3.0/24"
+  resource_group_name       = var.resource_group
+  virtual_network_name      = module.vnet.vnet_name
   network_security_group_id = "${azurerm_network_security_group.ssh.id}"
 }
 
@@ -211,7 +211,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   }
 
   storage_profile_image_reference {
-    id=data.azurerm_image.image.id
+    id = data.azurerm_image.image.id
   }
 
   storage_profile_os_disk {
@@ -222,10 +222,10 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   }
 
   storage_profile_data_disk {
-    lun          = 0
-    caching        = "ReadWrite"
-    create_option  = "Empty"
-    disk_size_gb   = 10
+    lun           = 0
+    caching       = "ReadWrite"
+    create_option = "Empty"
+    disk_size_gb  = 10
   }
 
   os_profile {
@@ -239,7 +239,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
 
     ssh_keys {
       path     = "/home/testadmin/.ssh/authorized_keys"
-      key_data = ${var.my_ssh_key}
+      key_data = var.my_ssh_key
     }
   }
 
@@ -251,7 +251,7 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
       name                                   = "PublicIPConfiguration"
       subnet_id                              = azurerm_subnet.frontend.id
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id]
-      primary = true
+      primary                                = true
     }
   }
 }
@@ -263,8 +263,8 @@ resource "azurerm_lb" "prlb" {
   resource_group_name = var.resource_group
 
   frontend_ip_configuration {
-    name                 = "PrivateIPAddress"
-    subnet_id            = azurerm_subnet.frontend.id
+    name      = "PrivateIPAddress"
+    subnet_id = azurerm_subnet.frontend.id
   }
 }
 
@@ -306,7 +306,7 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
   }
 
   storage_profile_image_reference {
-    id=data.azurerm_image.image.id
+    id = data.azurerm_image.image.id
   }
 
   storage_profile_os_disk {
@@ -317,10 +317,10 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
   }
 
   storage_profile_data_disk {
-    lun          = 0
-    caching        = "ReadWrite"
-    create_option  = "Empty"
-    disk_size_gb   = 10
+    lun           = 0
+    caching       = "ReadWrite"
+    create_option = "Empty"
+    disk_size_gb  = 10
   }
 
   os_profile {
@@ -334,7 +334,7 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
 
     ssh_keys {
       path     = "/home/testadmin/.ssh/authorized_keys"
-      key_data = ${var.my_ssh_key}
+      key_data = var.my_ssh_key
     }
   }
 
@@ -346,7 +346,7 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
       name                                   = "PrivateIPConfiguration"
       subnet_id                              = azurerm_subnet.backend.id
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.privatebepool.id]
-      primary = true
+      primary                                = true
     }
   }
 }
@@ -358,8 +358,8 @@ resource "azurerm_lb" "dblb" {
   resource_group_name = var.resource_group
 
   frontend_ip_configuration {
-    name                 = "PrivateDBIPAddress"
-    subnet_id            = azurerm_subnet.backend.id
+    name      = "PrivateDBIPAddress"
+    subnet_id = azurerm_subnet.backend.id
   }
 }
 
@@ -401,7 +401,7 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
   }
 
   storage_profile_image_reference {
-    id=data.azurerm_image.image.id
+    id = data.azurerm_image.image.id
   }
 
   storage_profile_os_disk {
@@ -412,10 +412,10 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
   }
 
   storage_profile_data_disk {
-    lun          = 0
-    caching        = "ReadWrite"
-    create_option  = "Empty"
-    disk_size_gb   = 10
+    lun           = 0
+    caching       = "ReadWrite"
+    create_option = "Empty"
+    disk_size_gb  = 10
   }
 
   os_profile {
@@ -429,7 +429,7 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
 
     ssh_keys {
       path     = "/home/testadmin/.ssh/authorized_keys"
-      key_data = ${var.my_ssh_key}
+      key_data = var.my_ssh_key
     }
   }
 
@@ -441,7 +441,7 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
       name                                   = "DBIPConfiguration"
       subnet_id                              = azurerm_subnet.database.id
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.privateDBbepool.id]
-      primary = true
+      primary                                = true
     }
   }
 }
