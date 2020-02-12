@@ -29,6 +29,6 @@ variable "add_nginx" {
 }
 
 variable "vm_count" {
-  default = 1
+  default     = 1
   description = "Number of vm to create"
 }

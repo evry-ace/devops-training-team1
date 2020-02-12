@@ -1,5 +1,5 @@
 resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.vm_name}-${format("%02d", count.index+1)}"
+  name                  = "${var.vm_name}-${format("%02d", count.index + 1)}"
   location              = var.location
   resource_group_name   = var.resource_group_name
   network_interface_ids = ["${element(azurerm_network_interface.main.*.id, count.index)}"]
@@ -17,7 +17,7 @@ resource "azurerm_virtual_machine" "main" {
   }
 
   storage_os_disk {
-    name              = "${var.vm_name}osdisk-${format("%02d", count.index+1)}"
+    name              = "${var.vm_name}osdisk-${format("%02d", count.index + 1)}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
@@ -48,7 +48,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_public_ip" "main" {
-  name                = "${var.vm_name}-pip-${format("%02d", count.index+1)}"
+  name                = "${var.vm_name}-pip-${format("%02d", count.index + 1)}"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
