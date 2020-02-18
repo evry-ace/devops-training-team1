@@ -13,10 +13,10 @@ module "vnet" {
 }
 
 resource "azurerm_subnet" "frontend" {
-  name                      = "frontend"
-  address_prefix            = "10.0.1.0/24"
-  resource_group_name       = var.resource_group
-  virtual_network_name      = module.vnet.vnet_name
+  name                 = "frontend"
+  address_prefix       = "10.0.1.0/24"
+  resource_group_name  = var.resource_group
+  virtual_network_name = module.vnet.vnet_name
   # network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
@@ -26,10 +26,10 @@ resource "azurerm_subnet_network_security_group_association" "frontend" {
 }
 
 resource "azurerm_subnet" "backend" {
-  name                      = "backend"
-  address_prefix            = "10.0.2.0/24"
-  resource_group_name       = var.resource_group
-  virtual_network_name      = module.vnet.vnet_name
+  name                 = "backend"
+  address_prefix       = "10.0.2.0/24"
+  resource_group_name  = var.resource_group
+  virtual_network_name = module.vnet.vnet_name
   # network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
@@ -39,10 +39,10 @@ resource "azurerm_subnet_network_security_group_association" "backend" {
 }
 
 resource "azurerm_subnet" "database" {
-  name                      = "database"
-  address_prefix            = "10.0.3.0/24"
-  resource_group_name       = var.resource_group
-  virtual_network_name      = module.vnet.vnet_name
+  name                 = "database"
+  address_prefix       = "10.0.3.0/24"
+  resource_group_name  = var.resource_group
+  virtual_network_name = module.vnet.vnet_name
   # network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
