@@ -258,7 +258,7 @@ resource "azurerm_virtual_machine_scale_set_extension" "vmss" {
   publisher                    = "Microsoft.Azure.Extensions"
   type                         = "CustomScript"
   type_handler_version         = "2.0"
-  protected_settings = <<PROT
+  protected_settings           = <<PROT
 
     {
 
