@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.0.0"
+  # version = "=2.0.0"
 
 }
 
@@ -251,24 +251,36 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
       primary                                = true
     }
   }
+
+  extension {
+    name                 = "example"
+    publisher            = "Microsoft.Azure.Extensions"
+    type                 = "CustomScript"
+    type_handler_version = "2.0"
+    protected_settings   = <<PROT
+     {
+         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+     }
+     PROT
+  }
 }
 
-resource "azurerm_virtual_machine_scale_set_extension" "vmss" {
-  name                         = "example"
-  virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.vmss.id
-  publisher                    = "Microsoft.Azure.Extensions"
-  type                         = "CustomScript"
-  type_handler_version         = "2.0"
-  protected_settings           = <<PROT
+# resource "azurerm_virtual_machine_scale_set_extension" "vmss" {
+#   name                         = "example"
+#   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+#   publisher                    = "Microsoft.Azure.Extensions"
+#   type                         = "CustomScript"
+#   type_handler_version         = "2.0"
+#   protected_settings           = <<PROT
 
-    {
+#     {
 
-        "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+#         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
 
-    }
+#     }
 
-    PROT
-}
+#     PROT
+# }
 
 
 // ------- Private LB1 for backend ---------
@@ -367,23 +379,35 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
       primary                                = true
     }
   }
+
+  extension {
+    name                 = "example"
+    publisher            = "Microsoft.Azure.Extensions"
+    type                 = "CustomScript"
+    type_handler_version = "2.0"
+    protected_settings   = <<PROT
+     {
+         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+     }
+     PROT
+  }
 }
 
-resource "azurerm_virtual_machine_scale_set_extension" "privatescalesetex" {
-  name                         = "privatescalesetex"
-  virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.privatescaleset.id
-  publisher                    = "Microsoft.Azure.Extensions"
-  type                         = "CustomScript"
-  type_handler_version         = "2.0"
-  # settings = jsonencode({
-  #   "commandToExecute" = "echo $HOSTNAME"
-  # })
-  protected_settings = <<PROT
-    {
-        "script": "${base64encode(file("${path.module}/user_data.sh"))}"
-    }
-    PROT
-}
+# resource "azurerm_virtual_machine_scale_set_extension" "privatescalesetex" {
+#   name                         = "privatescalesetex"
+#   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.privatescaleset.id
+#   publisher                    = "Microsoft.Azure.Extensions"
+#   type                         = "CustomScript"
+#   type_handler_version         = "2.0"
+#   # settings = jsonencode({
+#   #   "commandToExecute" = "echo $HOSTNAME"
+#   # })
+#   protected_settings = <<PROT
+#     {
+#         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+#     }
+#     PROT
+# }
 
 // ------- Private LB2 for db ---------
 resource "azurerm_lb" "dblb" {
