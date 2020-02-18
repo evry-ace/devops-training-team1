@@ -20,6 +20,11 @@ resource "azurerm_subnet" "frontend" {
   network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
+resource "azurerm_subnet_network_security_group_association" "frontend" {
+  subnet_id                 = azurerm_subnet.frontend.id
+  network_security_group_id = azurerm_network_security_group.ssh.id
+}
+
 resource "azurerm_subnet" "backend" {
   name                      = "backend"
   address_prefix            = "10.0.2.0/24"
