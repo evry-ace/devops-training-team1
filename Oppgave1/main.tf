@@ -520,4 +520,16 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
       primary                                = true
     }
   }
+
+  extension {
+    name                 = "example"
+    publisher            = "Microsoft.Azure.Extensions"
+    type                 = "CustomScript"
+    type_handler_version = "2.0"
+    protected_settings   = <<PROT
+     {
+         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+     }
+     PROT
+  }
 }
