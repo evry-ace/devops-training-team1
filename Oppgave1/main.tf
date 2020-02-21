@@ -17,12 +17,11 @@ resource "azurerm_subnet" "frontend" {
   address_prefix       = "10.0.1.0/24"
   resource_group_name  = var.resource_group
   virtual_network_name = module.vnet.vnet_name
-  # network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "frontend" {
   subnet_id                 = azurerm_subnet.frontend.id
-  network_security_group_id = azurerm_network_security_group.ssh.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "azurerm_subnet" "backend" {
@@ -30,12 +29,11 @@ resource "azurerm_subnet" "backend" {
   address_prefix       = "10.0.2.0/24"
   resource_group_name  = var.resource_group
   virtual_network_name = module.vnet.vnet_name
-  # network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "backend" {
   subnet_id                 = azurerm_subnet.backend.id
-  network_security_group_id = azurerm_network_security_group.ssh.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "azurerm_subnet" "database" {
@@ -43,15 +41,14 @@ resource "azurerm_subnet" "database" {
   address_prefix       = "10.0.3.0/24"
   resource_group_name  = var.resource_group
   virtual_network_name = module.vnet.vnet_name
-  # network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "database" {
   subnet_id                 = azurerm_subnet.database.id
-  network_security_group_id = azurerm_network_security_group.ssh.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-resource "azurerm_network_security_group" "ssh" {
+resource "azurerm_network_security_group" "nsg" {
   depends_on          = [module.vnet]
   name                = "ssh"
   location            = var.location
@@ -70,98 +67,19 @@ resource "azurerm_network_security_group" "ssh" {
   }
 }
 
-# resource "azurerm_network_security_group" "http" {
-#   depends_on          = ["module.vnet"]
-#   name                = "http"
-#   location            = var.location
-#   resource_group_name = var.resource_group
-
-#   security_rule {
-#     name                       = "httprule"
-#     priority                   = 101
-#     direction                  = "Inbound"
-#     access                     = "Allow"
-#     protocol                   = "Tcp"
-#     source_port_range          = "*"
-#     destination_port_range     = "80"
-#     source_address_prefix      = "*"
-#     destination_address_prefix = "<<loadbalancer frontend subnet>>"
-#   }
-# }
-
-# resource "azurerm_network_security_group" "httpinternal" {
-#   depends_on          = ["module.vnet"]
-#   name                = "httpinternal"
-#   location            = var.location
-#   resource_group_name = var.resource_group
-
-#   security_rule {
-#     name                       = "httpinternalrule"
-#     priority                   = 102
-#     direction                  = "Inbound"
-#     access                     = "Allow"
-#     protocol                   = "Tcp"
-#     source_port_range          = "*"
-#     destination_port_range     = "80"
-#     source_address_prefix      = "<<alle vm i frontend subnet>>"
-#     destination_address_prefix = "<<loadbalancer backend subnet>>"
-#   }
-# }
-
-# resource "azurerm_network_security_group" "psql" {
-#   depends_on          = ["module.vnet"]
-#   name                = "psql"
-#   location            = var.location
-#   resource_group_name = var.resource_group
-
-#   security_rule {
-#     name                       = "psqlrule"
-#     priority                   = 103
-#     direction                  = "Inbound"
-#     access                     = "Allow"
-#     protocol                   = "Tcp"
-#     source_port_range          = "5432"
-#     destination_port_range     = "5432"
-#     source_address_prefix      = "<alle vm i subnet backend>"
-#     destination_address_prefix = "<loadbalancer i subnet db >"
-#   }
-# }
-
-# module "vmfrontend" {
-#   source              = "./vm-module"
-#   vm_name             = "frontend"
-#   location            = var.location
-#   resource_group_name = var.resource_group
-#   subnet_id           = azurerm_subnet.frontend.id
-#   username            = "testadmin"
-#   password            = "Password123"
-#   add_nginx           = true
-#   vm_count            = 3
-# }
-
-# module "vmbackend" {
-#   source              = "./vm-module"
-#   vm_name             = "backend"
-#   location            = var.location
-#   resource_group_name = var.resource_group
-#   subnet_id           = azurerm_subnet.backend.id
-#   username            = "testadmin"
-#   password            = "Password123"
-#   add_nginx           = true
-#   vm_count            = 3
-# }
-
-# module "vmdatabase" {
-#   source              = "./vm-module"
-#   vm_name             = "database"
-#   location            = var.location
-#   resource_group_name = var.resource_group
-#   subnet_id           = azurerm_subnet.database.id
-#   username            = "testadmin"
-#   password            = "Password123"
-#   add_nginx           = true
-#   vm_count            = 3
-# }
+resource "azurerm_network_security_rule" "frontendhttp" {
+  name                        = "Port_Internet_80"
+  priority                    = 330
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "80"
+  source_address_prefix       = "*"
+  destination_address_prefix  = azurerm_public_ip.pip.ip_address
+  resource_group_name         = var.resource_group
+  network_security_group_name = azurerm_network_security_group.nsg.name
+}
 
 // ------- Public LB ---------
 resource "azurerm_public_ip" "pip" {
@@ -280,24 +198,6 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   }
 }
 
-# resource "azurerm_virtual_machine_scale_set_extension" "vmss" {
-#   name                         = "example"
-#   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.vmss.id
-#   publisher                    = "Microsoft.Azure.Extensions"
-#   type                         = "CustomScript"
-#   type_handler_version         = "2.0"
-#   protected_settings           = <<PROT
-
-#     {
-
-#         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
-
-#     }
-
-#     PROT
-# }
-
-
 // ------- Private LB1 for backend ---------
 resource "azurerm_lb" "prlb" {
   name                = "prlb-lb"
@@ -407,22 +307,6 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
      PROT
   }
 }
-
-# resource "azurerm_virtual_machine_scale_set_extension" "privatescalesetex" {
-#   name                         = "privatescalesetex"
-#   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.privatescaleset.id
-#   publisher                    = "Microsoft.Azure.Extensions"
-#   type                         = "CustomScript"
-#   type_handler_version         = "2.0"
-#   # settings = jsonencode({
-#   #   "commandToExecute" = "echo $HOSTNAME"
-#   # })
-#   protected_settings = <<PROT
-#     {
-#         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
-#     }
-#     PROT
-# }
 
 // ------- Private LB2 for db ---------
 resource "azurerm_lb" "dblb" {
