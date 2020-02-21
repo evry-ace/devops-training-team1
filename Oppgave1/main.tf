@@ -158,11 +158,10 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   os_profile {
     computer_name_prefix = var.prefix
     admin_username       = "testadmin"
-    admin_password       = "Password123"
   }
 
   os_profile_linux_config {
-    disable_password_authentication = false
+    disable_password_authentication = true
 
     ssh_keys {
       path     = "/home/testadmin/.ssh/authorized_keys"
@@ -268,11 +267,10 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
   os_profile {
     computer_name_prefix = var.prefix
     admin_username       = "testadmin"
-    admin_password       = "Password123"
   }
 
   os_profile_linux_config {
-    disable_password_authentication = false
+    disable_password_authentication = true
 
     ssh_keys {
       path     = "/home/testadmin/.ssh/authorized_keys"
@@ -378,11 +376,10 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
   os_profile {
     computer_name_prefix = var.prefix
     admin_username       = "testadmin"
-    admin_password       = "Password123"
   }
 
   os_profile_linux_config {
-    disable_password_authentication = false
+    disable_password_authentication = true
 
     ssh_keys {
       path     = "/home/testadmin/.ssh/authorized_keys"
