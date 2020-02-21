@@ -39,5 +39,6 @@ jobs:
           -destroy
 
     - name: 'Terraform destroy'
+      working-directory: ${{env.working-directory}}
       if: github.event.client_payload.text == 'Destroy'
       run: terraform destroy -auto-approve
