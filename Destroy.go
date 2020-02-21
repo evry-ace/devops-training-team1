@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -13,13 +14,25 @@ func main() {
 
 	//boolPtr := flag.Bool("Destroy", false, "Do you realy whant to destroy infrastruktire (default=false)")
 	//flag.Parse()
-	
+
+	token := "1234abc"
+	text := "test"
+
+	if len(os.Args) == 2 {
+		token = os.Args[1]
+		text = "test"
+	} else if len(os.Args) == 3 {
+		token = os.Args[1]
+		text = os.Args[2]
+	} else {
+		fmt.Println("Wrong number of parameters")
+		os.Exit(2)
+	}
 
 	url := "https://api.github.com/repos/evry-ace/devops-training-team1/dispatches"
 
 	//data := []byte(`{"event_type": "do-something", "client_payload": { "text": "a title"}}`)
-	data := []byte(`{"event_type": "do-something", "client_payload": { "text": "Destroy"}}`)
-	
+	data := []byte(`{"event_type": "do-something", "client_payload": { "text": "` + text + `"}}`)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
@@ -28,7 +41,7 @@ func main() {
 
 	// Set headers
 	req.Header.Set("Accept", "application/vnd.github.everest-preview+json")
-	req.Header.Set("Authorization", "token 399b25839157d8420298bd4328cd5745fb81ba60")
+	req.Header.Set("Authorization", "token "+token+"")
 
 	// Create and Add cookie to request
 	// cookie := http.Cookie{Name: "cookie_name", Value: "cookie_value"}
