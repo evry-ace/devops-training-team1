@@ -40,4 +40,4 @@ jobs:
 
     - name: 'Terraform destroy'
       if: github.event.client_payload.text == 'Destroy'
-      run: terraform destroy
+      run: terraform destroy -auto-approve
