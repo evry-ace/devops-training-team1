@@ -11,6 +11,17 @@ resource "azurerm_lb_probe" "probe" {
   port                = var.port
 }
 
+resource "azurerm_lb_nat_pool" "natpool" {
+  resource_group_name            = var.resource_group
+  name                           = "ssh"
+  loadbalancer_id                = var.loadbalancer_id
+  protocol                       = "Tcp"
+  frontend_port_start            = 50000
+  frontend_port_end              = 50119
+  backend_port                   = 22
+  frontend_ip_configuration_name = "${var.name}IPAddress"
+}
+
 resource "azurerm_lb_rule" "lbnatrule" {
   resource_group_name            = var.resource_group
   loadbalancer_id                = var.loadbalancer_id
@@ -78,7 +89,9 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
       name                                   = "${var.name}IPConfiguration"
       subnet_id                              = var.subnet_frontend_id
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id]
+      load_balancer_inbound_nat_rules_ids    = [azurerm_lb_nat_pool.natpool.id]
       primary                                = true
+      
     }
   }
 
