@@ -1,4 +1,5 @@
 provider "azurerm" {
+  # version = "=2.0.0"
 
 }
 
@@ -12,26 +13,41 @@ module "vnet" {
 }
 
 resource "azurerm_subnet" "frontend" {
-  name                      = "frontend"
-  address_prefix            = "10.0.1.0/24"
-  resource_group_name       = var.resource_group
-  virtual_network_name      = module.vnet.vnet_name
+  name                 = "frontend"
+  address_prefix       = "10.0.1.0/24"
+  resource_group_name  = var.resource_group
+  virtual_network_name = module.vnet.vnet_name
+  # network_security_group_id = azurerm_network_security_group.ssh.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "frontend" {
+  subnet_id                 = azurerm_subnet.frontend.id
   network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet" "backend" {
-  name                      = "backend"
-  address_prefix            = "10.0.2.0/24"
-  resource_group_name       = var.resource_group
-  virtual_network_name      = module.vnet.vnet_name
+  name                 = "backend"
+  address_prefix       = "10.0.2.0/24"
+  resource_group_name  = var.resource_group
+  virtual_network_name = module.vnet.vnet_name
+  # network_security_group_id = azurerm_network_security_group.ssh.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "backend" {
+  subnet_id                 = azurerm_subnet.backend.id
   network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
 resource "azurerm_subnet" "database" {
-  name                      = "database"
-  address_prefix            = "10.0.3.0/24"
-  resource_group_name       = var.resource_group
-  virtual_network_name      = module.vnet.vnet_name
+  name                 = "database"
+  address_prefix       = "10.0.3.0/24"
+  resource_group_name  = var.resource_group
+  virtual_network_name = module.vnet.vnet_name
+  # network_security_group_id = azurerm_network_security_group.ssh.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "database" {
+  subnet_id                 = azurerm_subnet.database.id
   network_security_group_id = azurerm_network_security_group.ssh.id
 }
 
@@ -250,7 +266,37 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
       primary                                = true
     }
   }
+
+  extension {
+    name                 = "example"
+    publisher            = "Microsoft.Azure.Extensions"
+    type                 = "CustomScript"
+    type_handler_version = "2.0"
+    protected_settings   = <<PROT
+     {
+         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+     }
+     PROT
+  }
 }
+
+# resource "azurerm_virtual_machine_scale_set_extension" "vmss" {
+#   name                         = "example"
+#   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+#   publisher                    = "Microsoft.Azure.Extensions"
+#   type                         = "CustomScript"
+#   type_handler_version         = "2.0"
+#   protected_settings           = <<PROT
+
+#     {
+
+#         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+
+#     }
+
+#     PROT
+# }
+
 
 // ------- Private LB1 for backend ---------
 resource "azurerm_lb" "prlb" {
@@ -348,7 +394,35 @@ resource "azurerm_virtual_machine_scale_set" "privatescaleset" {
       primary                                = true
     }
   }
+
+  extension {
+    name                 = "example"
+    publisher            = "Microsoft.Azure.Extensions"
+    type                 = "CustomScript"
+    type_handler_version = "2.0"
+    protected_settings   = <<PROT
+     {
+         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+     }
+     PROT
+  }
 }
+
+# resource "azurerm_virtual_machine_scale_set_extension" "privatescalesetex" {
+#   name                         = "privatescalesetex"
+#   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.privatescaleset.id
+#   publisher                    = "Microsoft.Azure.Extensions"
+#   type                         = "CustomScript"
+#   type_handler_version         = "2.0"
+#   # settings = jsonencode({
+#   #   "commandToExecute" = "echo $HOSTNAME"
+#   # })
+#   protected_settings = <<PROT
+#     {
+#         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+#     }
+#     PROT
+# }
 
 // ------- Private LB2 for db ---------
 resource "azurerm_lb" "dblb" {
@@ -445,5 +519,17 @@ resource "azurerm_virtual_machine_scale_set" "dbscaleset" {
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.privateDBbepool.id]
       primary                                = true
     }
+  }
+
+  extension {
+    name                 = "example"
+    publisher            = "Microsoft.Azure.Extensions"
+    type                 = "CustomScript"
+    type_handler_version = "2.0"
+    protected_settings   = <<PROT
+     {
+         "script": "${base64encode(file("${path.module}/user_data.sh"))}"
+     }
+     PROT
   }
 }

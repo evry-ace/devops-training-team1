@@ -39,10 +39,6 @@ jobs:
           -destroy
 
     - name: 'Terraform destroy'
+      working-directory: ${{env.working-directory}}
       if: github.event.client_payload.text == 'Destroy'
-      run: 'echo "Triggered event to ${{ github.event.client_payload.text }} infastrukture"'
-#      uses: hashicorp/terraform-github-actions@master
-#      with:
-#        tf_actions_version: 0.12.20
-#        tf_actions_subcommand: 'destroy'
-#        tf_actions_working_dir: ${{env.working-directory}} 
+      run: terraform destroy -auto-approve
