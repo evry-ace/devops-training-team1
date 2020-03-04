@@ -12,12 +12,11 @@ import (
 
 func main() {
 
-	//boolPtr := flag.Bool("Destroy", false, "Do you realy whant to destroy infrastruktire (default=false)")
-	//flag.Parse()
-
+	// Decleare variables for input arguments
 	token := "1234abc"
 	text := "test"
 
+	// Handle input arguments
 	if len(os.Args) == 2 {
 		token = os.Args[1]
 		text = "test"
@@ -25,15 +24,17 @@ func main() {
 		token = os.Args[1]
 		text = os.Args[2]
 	} else {
-		fmt.Println("Wrong number of parameters")
+		fmt.Println("Wrong number of arguments")
 		os.Exit(2)
 	}
 
+	// dispatcher Url
 	url := "https://api.github.com/repos/evry-ace/devops-training-team1/dispatches"
 
-	//data := []byte(`{"event_type": "do-something", "client_payload": { "text": "a title"}}`)
+	// request data
 	data := []byte(`{"event_type": "do-something", "client_payload": { "text": "` + text + `"}}`)
 
+	// Create the request
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	if err != nil {
 		log.Fatal("Error reading request. ", err)
@@ -43,16 +44,8 @@ func main() {
 	req.Header.Set("Accept", "application/vnd.github.everest-preview+json")
 	req.Header.Set("Authorization", "token "+token+"")
 
-	// Create and Add cookie to request
-	// cookie := http.Cookie{Name: "cookie_name", Value: "cookie_value"}
-	// req.AddCookie(&cookie)
-
 	// Set client timeout
 	client := &http.Client{Timeout: time.Second * 10}
-
-	// Validate cookie and headers are attached
-	// fmt.Println(req.Cookies())
-	// fmt.Println(req.Header)
 
 	// Send request
 	resp, err := client.Do(req)
@@ -61,13 +54,16 @@ func main() {
 	}
 	defer resp.Body.Close()
 
+	// Display the response
 	fmt.Println("response Status:", resp.Status)
 	fmt.Println("response Headers:", resp.Header)
 
+	// Display response errors
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal("Error reading body. ", err)
 	}
 
+	// Display the body data
 	fmt.Printf("%s\n", body)
 }
