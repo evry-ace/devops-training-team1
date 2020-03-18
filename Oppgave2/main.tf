@@ -9,16 +9,16 @@ data "azurerm_resource_group" "example" {
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "${var.prefix}-vnet"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   address_space       = ["10.0.0.0/16"]
 }
 
 
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "example-aks1"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   dns_prefix          = "exampleaks1"
   kubernetes_version  = "1.15.10"
 
