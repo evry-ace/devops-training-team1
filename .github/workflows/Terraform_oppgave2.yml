@@ -1,0 +1,70 @@
+name: Terraform validation
+
+
+on:
+  push:
+    branches:
+     - master
+    paths:
+    - 'Oppgave2/**'
+  pull_request:
+    branches: 
+      - master
+    paths:
+    - 'Oppgave2/**'
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.clientId }}
+      ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
+      ARM_TENANT_ID: ${{ secrets.tenantId }}
+      ARM_ACCESS_KEY: ${{ secrets.accessKey }}
+      TF_VAR_clId: ${{ secrets.clientId }}
+      TF_VAR_clSec: ${{ secrets.clientSecret }}
+      working-directory: ./Oppgave2
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v1
+    - name: 'Terraform fmt check'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'fmt'
+        tf_actions_working_dir: ${{env.working-directory}}
+    - name: 'Terraform init'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: ${{env.working-directory}}
+    - name: 'Terraform validate'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'validate'
+        tf_actions_working_dir: ${{env.working-directory}}
+    - name: 'Terraform plan'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: ${{env.working-directory}}
+        args: |-
+          -out=tfplan
+    - name: 'Terraform apply'
+      if: github.event_name == 'push'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'apply'
+        tf_actions_working_dir: ${{env.working-directory}}
+        args: |-
+          tfplan
