@@ -11,9 +11,15 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "${var.prefix}-vnet"
   location            = data.azurerm_resource_group.example.location
   resource_group_name = data.azurerm_resource_group.example.name
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.240.0.0/16"]
 }
 
+resource "azurerm_subnet" "Kubernetes" {
+  name                 = "Kubernetes"
+  address_prefix       = "10.240.1.0/24"
+  resource_group_name  = data.azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+}
 
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "example-aks1"
@@ -26,7 +32,7 @@ resource "azurerm_kubernetes_cluster" "example" {
     name           = "default"
     node_count     = 1
     vm_size        = "Standard_D2_v2"
-    vnet_subnet_id = azurerm_virtual_network.vnet.id
+    vnet_subnet_id = azurerm_subnet.Kubernetes.id
   }
 
   service_principal {
