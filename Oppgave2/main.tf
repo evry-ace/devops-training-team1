@@ -49,7 +49,7 @@ resource "kubernetes_pod" "nginxpod" {
   metadata {
     name = "nginxpod"
     labels = {
-      app.kubernetes.io / name = "Mynginxapp"
+      app = "Mynginxapp"
     }
   }
 
