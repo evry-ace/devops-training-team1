@@ -5,9 +5,13 @@ on:
   push:
     branches:
      - master
+    paths:
+    - 'Oppgave1/**'
   pull_request:
     branches: 
       - master
+    paths:
+    - 'Oppgave1/**'
 
 jobs:
   build:
