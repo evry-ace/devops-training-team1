@@ -20,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   location            = data.azurerm_resource_group.example.location
   resource_group_name = data.azurerm_resource_group.example.name
   dns_prefix          = "exampleaks1"
-  kubernetes_version  = "1.15.10"
+  kubernetes_version  = "1.14.8"
 
   default_node_pool {
     name           = "default"
