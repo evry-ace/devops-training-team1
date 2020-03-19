@@ -45,6 +45,20 @@ resource "azurerm_kubernetes_cluster" "example" {
   }
 }
 
+
+provider "kubernetes" {
+  load_config_file = "false"
+
+  host = azurerm_kubernetes_cluster.example.kube_config.0.host
+
+  client_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_certificate)
+
+  client_key = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_key)
+
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.cluster_ca_certificate)
+
+}
+
 resource "kubernetes_pod" "nginxpod" {
   metadata {
     name = "nginxpod"
@@ -55,45 +69,30 @@ resource "kubernetes_pod" "nginxpod" {
 
   spec {
     container {
-      image = "nginx:1.7.9"
+      image = "nginx:1.7.8"
       name  = "example"
 
-      env {
-        name  = "environment"
-        value = "nginxtest"
-      }
-
-      liveness_probe {
-        http_get {
-          path = "/nginx_status"
-          port = 80
-
-          http_header {
-            name  = "X-Custom-Header"
-            value = "Awesome"
-          }
-        }
-
-        initial_delay_seconds = 3
-        period_seconds        = 3
+      port {
+        container_port = 80
       }
     }
+  }
+}
 
-    dns_config {
-      nameservers = ["1.1.1.1", "8.8.8.8", "9.9.9.9"]
-      searches    = ["example.com"]
-
-      option {
-        name  = "ndots"
-        value = 1
-      }
-
-      option {
-        name = "use-vc"
-      }
+resource "kubernetes_service" "nginx" {
+  metadata {
+    name = "nginx-example"
+  }
+  spec {
+    selector = {
+      App = kubernetes_pod.nginx.metadata[0].labels.App
+    }
+    port {
+      port        = 80
+      target_port = 80
     }
 
-    dns_policy = "None"
+    type = "LoadBalancer"
   }
 }
 
