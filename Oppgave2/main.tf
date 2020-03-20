@@ -183,9 +183,20 @@ provider "helm" {
   }
 }
 
+data "helm_repository" "bitnami" {
+  name = "bitnami"
+  url  = "https://charts.bitnami.com/bitnami"
+}
+
+/* resource "helm_release" "local" {
+  name       = "my-local-chart"
+  chart      = "./charts/example"
+} */
+
 resource "helm_release" "mydatabase" {
-  name  = "mydatabase"
-  chart = "stable/mariadb"
+  name       = "mydatabase"
+  repository = data.helm_repository.bitnami.metadata[0].name
+  chart      = "mariadb"
 
   set {
     name  = "mariadbUser"
