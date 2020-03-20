@@ -158,3 +158,41 @@ resource "kubernetes_service" "scalablenginx" {
     type = "LoadBalancer"
   }
 }
+
+/* provider "helm" {
+  kubernetes {
+    # config_path = "/path/to/kube_cluster.yaml"
+    config_path = azurerm_kubernetes_cluster.example.kube_config_raw
+  }
+} */
+
+provider "helm" {
+  kubernetes {
+    host                   = azurerm_kubernetes_cluster.example.kube_config.0.host
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.cluster_ca_certificate)
+    /*     host     = "https://104.196.242.174"
+    username = "ClusterMaster"
+    password = "MindTheGap"
+
+    client_certificate     = file("~/.kube/client-cert.pem")
+    client_key             = file("~/.kube/client-key.pem")
+    cluster_ca_certificate = file("~/.kube/cluster-ca-cert.pem") */
+  }
+}
+
+/* resource "helm_release" "mydatabase" {
+  name  = "mydatabase"
+  chart = "stable/mariadb"
+
+  set {
+    name  = "mariadbUser"
+    value = "foo"
+  }
+
+  set {
+    name  = "mariadbPassword"
+    value = "qux"
+  }
+} */
