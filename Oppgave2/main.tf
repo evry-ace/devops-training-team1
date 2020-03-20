@@ -193,7 +193,7 @@ data "helm_repository" "bitnami" {
   chart      = "./charts/example"
 } */
 
-resource "helm_release" "mydatabase" {
+/* resource "helm_release" "mydatabase" {
   name       = "mydatabase"
   repository = data.helm_repository.bitnami.metadata[0].name
   chart      = "mariadb"
@@ -207,4 +207,4 @@ resource "helm_release" "mydatabase" {
     name  = "mariadbPassword"
     value = "qux"
   }
-}
+} */
