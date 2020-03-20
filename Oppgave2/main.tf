@@ -182,7 +182,7 @@ provider "helm" {
   }
 }
 
-/* resource "helm_release" "mydatabase" {
+resource "helm_release" "mydatabase" {
   name  = "mydatabase"
   chart = "stable/mariadb"
 
@@ -195,4 +195,4 @@ provider "helm" {
     name  = "mariadbPassword"
     value = "qux"
   }
-} */
+}
