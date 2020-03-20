@@ -6,12 +6,13 @@ on:
     branches:
      - master
     paths:
-    - 'Oppgave1/**'
+    - 'Oppgave2/**'
   pull_request:
     branches: 
       - master
     paths:
-    - 'Oppgave1/**'
+    - 'Oppgave2/**'
+
 
 jobs:
   build:
@@ -24,7 +25,9 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
       ARM_TENANT_ID: ${{ secrets.tenantId }}
       ARM_ACCESS_KEY: ${{ secrets.accessKey }}
-      working-directory: ./Oppgave1
+      TF_VAR_clId: ${{ secrets.clientId }}
+      TF_VAR_clSec: ${{ secrets.clientSecret }}
+      working-directory: ./Oppgave2
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
