@@ -189,10 +189,10 @@ provider "helm" {
 } */
 
 resource "helm_release" "local" {
-  name       = "my-local-chart"
-  chart      = "./team1-chart"
+  name  = "my-local-chart"
+  chart = "./team1-chart"
 
-#--set ingress.paths[0]=/fo-path
+  #--set ingress.paths[0]=/fo-path
   set {
     name  = "ingress.paths[0]"
     value = "/my-local-chart"
