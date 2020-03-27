@@ -183,15 +183,21 @@ provider "helm" {
   }
 }
 
-data "helm_repository" "bitnami" {
+/* data "helm_repository" "bitnami" {
   name = "bitnami"
   url  = "https://charts.bitnami.com/bitnami"
-}
-
-/* resource "helm_release" "local" {
-  name       = "my-local-chart"
-  chart      = "./charts/example"
 } */
+
+resource "helm_release" "local" {
+  name       = "my-local-chart"
+  chart      = "./team1-chart"
+
+#--set ingress.paths[0]=/fo-path
+  set {
+    name  = "ingress.paths[0]"
+    value = "/my-local-chart"
+  }
+}
 
 /* resource "helm_release" "mydatabase" {
   name       = "mydatabase"
