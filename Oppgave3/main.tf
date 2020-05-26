@@ -9,6 +9,7 @@ data "azurerm_resource_group" "example" {
 
 data "azurerm_kubernetes_cluster" "example" {
   name = "example-aks1"
+  resource_group_name = data.azurerm_resource_group.example.name
 }
 
 provider "kubernetes" {
