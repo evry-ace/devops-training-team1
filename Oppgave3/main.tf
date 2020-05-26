@@ -15,13 +15,13 @@ data "azurerm_kubernetes_cluster" "example" {
 provider "kubernetes" {
   load_config_file = "false"
 
-  host = azurerm_kubernetes_cluster.example.kube_config.0.host
+  host = data.azurerm_kubernetes_cluster.example.kube_config.0.host
 
-  client_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_certificate)
+  client_certificate = base64decode(data.azurerm_kubernetes_cluster.example.kube_config.0.client_certificate)
 
-  client_key = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_key)
+  client_key = base64decode(data.azurerm_kubernetes_cluster.example.kube_config.0.client_key)
 
-  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.cluster_ca_certificate)
+  cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.example.kube_config.0.cluster_ca_certificate)
 
 }
 
@@ -61,10 +61,10 @@ resource "kubernetes_namespace" "prometheus" {
 provider "helm" {
   kubernetes {
     load_config_file       = "false"
-    host                   = azurerm_kubernetes_cluster.example.kube_config.0.host
-    client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_certificate)
-    client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.client_key)
-    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config.0.cluster_ca_certificate)
+    host                   = data.azurerm_kubernetes_cluster.example.kube_config.0.host
+    client_certificate     = base64decode(data.azurerm_kubernetes_cluster.example.kube_config.0.client_certificate)
+    client_key             = base64decode(data.azurerm_kubernetes_cluster.example.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.example.kube_config.0.cluster_ca_certificate)
     /*     host     = "https://104.196.242.174"
     username = "ClusterMaster"
     password = "MindTheGap"
