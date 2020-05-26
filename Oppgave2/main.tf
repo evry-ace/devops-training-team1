@@ -159,6 +159,33 @@ resource "kubernetes_service" "scalablenginx" {
   }
 }
 
+
+resource "kubernetes_ingress" "nginx_ingress" {
+  metadata {
+    name = "nginx-ingress"
+  }
+
+  spec {
+    backend {
+      service_name = kubernetes_service.scalablenginx.name
+      service_port = kubernetes_service.scalablenginx.port
+    }
+
+    rule {
+      http {
+        path {
+          backend {
+            service_name = kubernetes_service.scalablenginx.name
+            service_port = kubernetes_service.scalablenginx.port
+          }
+
+          path = "/my-local-chart/*"
+        }
+      }
+    }
+  }
+}
+
 /* provider "helm" {
   kubernetes {
     # config_path = "/path/to/kube_cluster.yaml"
@@ -183,10 +210,24 @@ provider "helm" {
   }
 }
 
-/* data "helm_repository" "bitnami" {
-  name = "bitnami"
-  url  = "https://charts.bitnami.com/bitnami"
-} */
+data "helm_repository" "traefik" {
+  name = "traefik"
+  url  = "https://containous.github.io/traefik-helm-chart"
+}
+
+resource "helm_release" "traefik" {
+  name       = "traefik"
+  repository = data.helm_repository.traefik.metadata[0].name
+  chart      = "traefik/traefik"
+  namespace  = "kube-system"
+
+  #--set="logs.loglevel=DEBUG"
+  set {
+    name  = "logs.loglevel"
+    value = "INFO"
+  }
+}
+
 
 resource "helm_release" "local" {
   name  = "my-local-chart"
@@ -198,19 +239,3 @@ resource "helm_release" "local" {
     value = "/my-local-chart"
   }
 }
-
-/* resource "helm_release" "mydatabase" {
-  name       = "mydatabase"
-  repository = data.helm_repository.bitnami.metadata[0].name
-  chart      = "mariadb"
-
-  set {
-    name  = "mariadbUser"
-    value = "foo"
-  }
-
-  set {
-    name  = "mariadbPassword"
-    value = "qux"
-  }
-} */

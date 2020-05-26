@@ -1,0 +1,4 @@
+$env:TF_VAR_clId = "d3791396-3ca2-49ff-8ea8-7ace393c4b8b"
+$env:TF_VAR_clSec = "af0704ea-1c2d-4b5b-bedd-d9e27d7bad9a"
+$env:ARM_ACCESS_KEY = "2Zs6IaYQCOeB/VuneMkzx5nsbyVoWu9xToaGidJFu9Qni3txYk2wjny4u/2Mu2uSm/2LrRj59Mw5791ES+PbUA=="
+az account set --subscription f18e2af9-2f65-4e18-bc39-54d74e271e7c
