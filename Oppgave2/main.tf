@@ -28,7 +28,7 @@ resource "azurerm_kubernetes_cluster" "example" {
   dns_prefix          = "exampleaks1"
   kubernetes_version  = "1.14.8"
 
-  
+
   addon_profile {
     kube_dashboard {
       enabled = "true"
