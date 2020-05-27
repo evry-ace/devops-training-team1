@@ -82,9 +82,9 @@ resource "helm_release" "prometheus-operator" {
   chart      = "prometheus-operator"
   version    = "8.13.7"
 
-  #   values = [
-  #     data.template_file.prometheus_operator_config.rendered
-  #   ]
+    values = [
+      data.template_file.prometheus_operator_config.rendered
+    ]
 }
 
 # data "helm_repository" "traefik" {
