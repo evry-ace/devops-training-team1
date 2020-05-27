@@ -175,16 +175,16 @@ resource "kubernetes_ingress" "nginx_ingress" {
 
   spec {
     backend {
-      service_name = kubernetes_service.scalablenginx.name
-      service_port = kubernetes_service.scalablenginx.port
+      service_name = kubernetes_service.scalablenginx.metadata.0.name
+      service_port = kubernetes_service.scalablenginx.spec.0.port.0.port
     }
 
     rule {
       http {
         path {
           backend {
-            service_name = kubernetes_service.scalablenginx.name
-            service_port = kubernetes_service.scalablenginx.port
+            service_name = kubernetes_service.scalablenginx.metadata.0.name
+            service_port = kubernetes_service.scalablenginx.spec.0.port.0.port
           }
 
           path = "/my-local-chart/*"
