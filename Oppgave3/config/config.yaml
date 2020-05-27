@@ -1,12 +1,15 @@
 ---
-alertmanager:
-  ingress:
-    enabled: true
+# alertmanager:
+#   ingress:
+#     enabled: true
 
 prometheus:
   ingress:
     enabled: true
+    paths: ["/*"]
+    hosts:
+      - prometheus.${external_dns_ingress_dns}
  
-grafana:
-  ingress:
-    enabled: true
+# grafana:
+#   ingress:
+#     enabled: true
