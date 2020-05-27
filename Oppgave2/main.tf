@@ -28,6 +28,14 @@ resource "azurerm_kubernetes_cluster" "example" {
   dns_prefix          = "exampleaks1"
   kubernetes_version  = "1.14.8"
 
+
+  addon_profile {
+    kube_dashboard {
+      enabled = "true"
+    }
+
+  }
+
   default_node_pool {
     name           = "default"
     node_count     = 1
@@ -159,6 +167,33 @@ resource "kubernetes_service" "scalablenginx" {
   }
 }
 
+
+resource "kubernetes_ingress" "nginx_ingress" {
+  metadata {
+    name = "nginx-ingress"
+  }
+
+  spec {
+    backend {
+      service_name = kubernetes_service.scalablenginx.metadata.0.name
+      service_port = kubernetes_service.scalablenginx.spec.0.port.0.port
+    }
+
+    rule {
+      http {
+        path {
+          backend {
+            service_name = kubernetes_service.scalablenginx.metadata.0.name
+            service_port = kubernetes_service.scalablenginx.spec.0.port.0.port
+          }
+
+          path = "/my-local-chart/*"
+        }
+      }
+    }
+  }
+}
+
 /* provider "helm" {
   kubernetes {
     # config_path = "/path/to/kube_cluster.yaml"
@@ -183,10 +218,24 @@ provider "helm" {
   }
 }
 
-/* data "helm_repository" "bitnami" {
-  name = "bitnami"
-  url  = "https://charts.bitnami.com/bitnami"
-} */
+data "helm_repository" "traefik" {
+  name = "traefik"
+  url  = "https://containous.github.io/traefik-helm-chart"
+}
+
+resource "helm_release" "traefik" {
+  name       = "traefik"
+  repository = data.helm_repository.traefik.metadata[0].name
+  chart      = "traefik/traefik"
+  namespace  = "kube-system"
+
+  #--set="logs.loglevel=DEBUG"
+  set {
+    name  = "logs.loglevel"
+    value = "INFO"
+  }
+}
+
 
 resource "helm_release" "local" {
   name  = "my-local-chart"
@@ -198,19 +247,3 @@ resource "helm_release" "local" {
     value = "/my-local-chart"
   }
 }
-
-/* resource "helm_release" "mydatabase" {
-  name       = "mydatabase"
-  repository = data.helm_repository.bitnami.metadata[0].name
-  chart      = "mariadb"
-
-  set {
-    name  = "mariadbUser"
-    value = "foo"
-  }
-
-  set {
-    name  = "mariadbPassword"
-    value = "qux"
-  }
-} */
