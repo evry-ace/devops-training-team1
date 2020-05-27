@@ -38,17 +38,18 @@ resource "kubernetes_namespace" "prometheus" {
 
 data "template_file" "prometheus_operator_config" {
   template = file("${path.root}/config/config.yaml")
-  # vars = {
-  #   external_dns_ingress_dns = "tietoevry.site"
-  #   #istio_secret = "${true ? "[istio.default, istio.prometheus-operator-prometheus]" : "[]"}"
+  vars = {
+    external_dns_ingress_dns = "team1.site"
+    #   #istio_secret = "${true ? "[istio.default, istio.prometheus-operator-prometheus]" : "[]"}"
 
-  #   alertmanager_tls_secret_name = "alertmanager-${replace("tietoevry.site", ".", "-")}-tls"
+    #   alertmanager_tls_secret_name = "alertmanager-${replace("tietoevry.site", ".", "-")}-tls"
 
-  #   grafana_tls_secret_name = "grafana-${replace("tietoevry.site", ".", "-")}-tls"
+    #   grafana_tls_secret_name = "grafana-${replace("tietoevry.site", ".", "-")}-tls"
 
-  #   prometheus_operator_create_crd = true
-  #   prometheus_tls_secret_name     = "prometheus-${replace("tietoevry.site", ".", "-")}-tls"
-  # }
+    #   prometheus_operator_create_crd = true
+    #   prometheus_tls_secret_name     = "prometheus-${replace("tietoevry.site", ".", "-")}-tls"
+    #
+  }
 }
 
 /* provider "helm" {
