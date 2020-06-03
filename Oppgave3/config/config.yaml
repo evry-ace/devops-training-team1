@@ -6,7 +6,7 @@
 prometheus:
   ingress:
     enabled: true
-    paths: ["/*"]
+    paths: ["/"]
     hosts:
       - prometheus.${external_dns_ingress_dns}
  
