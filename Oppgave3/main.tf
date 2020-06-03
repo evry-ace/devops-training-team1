@@ -40,7 +40,7 @@ resource "kubernetes_namespace" "prometheus" {
 data "template_file" "prometheus_operator_config" {
   template = file("${path.root}/config/config.yaml")
   vars = {
-    external_dns_ingress_dns = "team1.site"
+    external_dns_ingress_dns = "team1.kia"
     #   #istio_secret = "${true ? "[istio.default, istio.prometheus-operator-prometheus]" : "[]"}"
 
     #   alertmanager_tls_secret_name = "alertmanager-${replace("tietoevry.site", ".", "-")}-tls"
