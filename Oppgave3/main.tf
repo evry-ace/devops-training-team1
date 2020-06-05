@@ -26,14 +26,20 @@ provider "kubernetes" {
 
 }
 
-resource "kubernetes_namespace" "prometheus" {
+#resource "kubernetes_namespace" "prometheus" {
+#  metadata {
+#    name = "monitoring"
+#
+#    # labels = {
+#    #   "istio-injection"    = "disabled"
+#    #   "kiali.io/member-of" = "istio-system"
+#    # }
+#  }
+#}
+
+data "kubernetes_namespace" "prometheus" {
   metadata {
     name = "monitoring"
-
-    # labels = {
-    #   "istio-injection"    = "disabled"
-    #   "kiali.io/member-of" = "istio-system"
-    # }
   }
 }
 
@@ -79,7 +85,7 @@ provider "helm" {
 
 resource "helm_release" "prometheus-operator" {
   name       = "prometheus-operator"
-  namespace  = kubernetes_namespace.prometheus.metadata[0].name
+  namespace  = data.kubernetes_namespace.prometheus.metadata[0].name
   repository = "https://kubernetes-charts.storage.googleapis.com"
   chart      = "prometheus-operator"
   version    = "8.13.7"
