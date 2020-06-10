@@ -1,0 +1,44 @@
+name: Terraform destroy
+
+on:  
+#  push:
+#    branches:
+#      - 'destroy/*'
+  repository_dispatch:
+    types: destroy-oppgave3
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    env:
+      ARM_CLIENT_ID: ${{ secrets.clientId }}
+      ARM_CLIENT_SECRET: ${{ secrets.clientSecret }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.subscriptionId }}
+      ARM_TENANT_ID: ${{ secrets.tenantId }}
+      ARM_ACCESS_KEY: ${{ secrets.accessKey }}
+      working-directory: ./Oppgave3
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      
+    - name: 'Checkout'
+      uses: actions/checkout@v1
+    - name: 'Terraform init'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: ${{env.working-directory}}
+        
+    - name: 'Terraform plan destroy'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.20
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: ${{env.working-directory}}
+        args: |-
+          -destroy
+
+    - name: 'Terraform destroy'
+      working-directory: ${{env.working-directory}}
+      if: github.event.client_payload.text == 'Destroy'
+      run: terraform destroy -auto-approve
