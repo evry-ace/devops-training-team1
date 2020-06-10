@@ -1,7 +1,10 @@
 ---
-# alertmanager:
-#   ingress:
-#     enabled: true
+alertmanager:
+  ingress:
+    enabled: true
+    paths: ["/"]
+    hosts:
+      - alertmanager.${external_dns_ingress_dns}
 
 prometheus:
   ingress:
@@ -9,7 +12,26 @@ prometheus:
     paths: ["/"]
     hosts:
       - prometheus.${external_dns_ingress_dns}
+  additionalServiceMonitors:
+    - name: istio
+      selector: {}
+      matchExpressions:
+        - {key: istio, operator: In, values: [pilot, mixer]}
+      namespaceSelector:
+        matchNames:
+          - monitoring
+      jobLabel: istio
+      endpoints:
+        - port: prometheus
+          interval: 5s
+        - port: http-monitoring
+          interval: 5s
+        - port: statsd-prom
+          interval: 5s
  
-# grafana:
-#   ingress:
-#     enabled: true
+grafana:
+  ingress:
+    enabled: true
+    path: "/"
+    hosts:
+      - grafana.${external_dns_ingress_dns}
