@@ -9,7 +9,7 @@ on:
     - 'Oppgave3/**'
   pull_request:
     branches: 
-      - Oppgave3
+      - master
     paths:
     - 'Oppgave3/**'
 
