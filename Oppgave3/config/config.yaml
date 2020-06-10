@@ -32,8 +32,6 @@ prometheus:
     externalUrl: ""
     routePrefix: /
     retention: 30d
-    retentionSize: 75GB
-    secrets: ${istio_secret}
     additionalScrapeConfigs:
       - job_name: 'envoy-stats'
         metrics_path: /stats/prometheus
