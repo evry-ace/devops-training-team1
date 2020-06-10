@@ -12,6 +12,22 @@ prometheus:
     paths: ["/"]
     hosts:
       - prometheus.${external_dns_ingress_dns}
+  additionalServiceMonitors:
+    - name: istio
+      selector: {}
+      matchExpressions:
+        - {key: istio, operator: In, values: [pilot, mixer]}
+      namespaceSelector:
+        matchNames:
+          - monitoring
+      jobLabel: istio
+      endpoints:
+        - port: prometheus
+          interval: 5s
+        - port: http-monitoring
+          interval: 5s
+        - port: statsd-prom
+          interval: 5s
  
 grafana:
   ingress:
