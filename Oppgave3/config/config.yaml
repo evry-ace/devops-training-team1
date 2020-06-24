@@ -16,6 +16,7 @@ alertmanager:
       repeat_interval: 12h
       receiver: 'slack-notifications'
     receivers:
+    - name: "null"
     - name: 'slack-notifications'
       slack_configs:
       - channel: '#devops-training-team1'
