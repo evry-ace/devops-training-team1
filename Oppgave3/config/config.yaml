@@ -1,4 +1,33 @@
 ---
+global:
+  rbac:
+    enabled: true
+commonLabels:
+  prometheus: default
+defaultRules:
+  labels:
+    alertmanager: default
+  rules:
+    alertmanager: true
+    etcd: false
+    general: true
+    k8s: true
+    kubeApiserver: false
+    kubeApiserverError: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubernetesAbsent: false
+    kubernetesApps: true
+    kubernetesResources: false
+    kubernetesStorage: true
+    kubernetesSystem: false # Override in /root/config/alertrules/kubernetes_sytem.yaml
+    kubeScheduler: false
+    network: false # Override in /root/config/alertrules/kubernetes_nodes.yaml
+    node: false # Override in /root/config/alertrules/kubernetes_nodes.yaml
+    prometheus: true
+    prometheusOperator: true
+    time: false # Override in /root/config/alertrules/kubernetes_nodes.yaml
+    
 alertmanager:
   ingress:
     enabled: true
@@ -79,8 +108,26 @@ prometheus:
         alertmanager: default
  
 grafana:
+  adminUser: admin
+  adminPassword: admin
   ingress:
     enabled: true
     path: "/"
     hosts:
       - grafana.${external_dns_ingress_dns}
+
+coreDns:
+  enabled: false
+kubeDns:
+  enabled: true
+  service:
+    selector:
+      k8s-app: kubedns
+kubeScheduler:
+  enabled: false
+kubeApi:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
