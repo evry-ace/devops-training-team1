@@ -5,6 +5,21 @@ alertmanager:
     paths: ["/"]
     hosts:
       - alertmanager.${external_dns_ingress_dns}
+  config:
+    global:
+      resolve_timeout: 5m
+      slack_api_url: 'https://hooks.slack.com/services/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'
+    route:
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'slack-notifications'
+    receivers:
+    - name: 'slack-notifications'
+      slack_configs:
+      - channel: '#devops-training-team1'
+        send_resolved: true
 
 prometheus:
   ingress:

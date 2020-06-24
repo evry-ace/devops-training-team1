@@ -76,7 +76,7 @@ resource "helm_release" "prometheus-operator" {
   namespace  = kubernetes_namespace.prometheus.metadata[0].name
   repository = "https://kubernetes-charts.storage.googleapis.com"
   chart      = "prometheus-operator"
-  version    = "8.13.7"
+  version    = "8.13.8"
 
   values = [
     data.template_file.prometheus_operator_config.rendered
